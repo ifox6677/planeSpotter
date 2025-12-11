@@ -18,7 +18,7 @@ public class OSMDataExtractor implements IDataExtractor {
     public boolean wasCityFound(String data) {
         try {
             JSONObject json = new JSONObject(data);
-            return json.has("elements");
+            return json.has("ac");
         } catch (JSONException e) {
             e.printStackTrace();
             return false;
@@ -31,80 +31,27 @@ public class OSMDataExtractor implements IDataExtractor {
             //fix issues with Ã¼ instead of ü, etc. OSM data is UTF-8 encoded
             //Overpass-API does not provide info about utf-8 charset in header
             //String(byte[] bytes, Charset charset) constructs a new String by decoding the specified array of bytes using the specified charset.
-            data = (new String(data.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
+            //data = (new String(data.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
             Lavatory lavatory = new Lavatory();
             lavatory.setTimestamp((long) ((System.currentTimeMillis())/ 1000));
 
             JSONObject json = new JSONObject(data);
-            if (!json.has("tags")) return null;
-
             lavatory.setOperator(" ");
             lavatory.setOpeningHours(" ");
             lavatory.setAddress1(" ");
             lavatory.setAddress2(" ");
 
-            lavatory.setUuid(json.getString("type").equals("node") ? "N" + json.getString("id") : "W" + json.getString("id"));
-            JSONObject tags = json.getJSONObject("tags");
-            if (tags.has("amenity") && tags.getString("amenity").contains("sanitary_dump_station")) {
-                if (tags.has("operator")) lavatory.setOperator(tags.getString("operator"));
-                else if (tags.has("name")) lavatory.setOperator(tags.getString("name"));
-                if (tags.has("network")) lavatory.setOperator(lavatory.getOperator()+" "+tags.getString("network"));
-                if (tags.has("opening_hours")) lavatory.setOpeningHours(tags.getString("opening_hours"));
-                if (tags.has("access")){
-                    if (tags.getString("access").contains("customers") || tags.getString("access").contains("destination")) lavatory.setOpeningHours(context.getString(R.string.customers_only) + " " + lavatory.getOpeningHours());
-                    else if (tags.getString("access").contains("network")) lavatory.setOpeningHours(context.getString(R.string.customers_only) + " " + lavatory.getOpeningHours());
-                    else if (!tags.getString(("access")).contains("yes")) return null ;
-                }
-
-                if ((tags.has("sanitary_dump_station:chemical_toilet") && !tags.getString(("sanitary_dump_station:chemical_toilet")).equals("no")) ||
-                        (tags.has("chemical_toilet") && !tags.getString(("chemical_toilet")).equals("no")) ||
-                        (tags.has("sanitary_dump_station:basin") && !tags.getString(("sanitary_dump_station:basin")).equals("no")) ||
-                        (tags.has("sanitary_dump_station:round_drain") && !tags.getString(("sanitary_dump_station:round_drain")).equals("no")) ||
-                        (tags.has("sanitary_dump_station:accepted") && tags.getString(("sanitary_dump_station:accepted")).contains("black_water"))) lavatory.setChemicalToilet(true);
-
-                if ((tags.has("sanitary_dump_station:water_point") && !tags.getString(("sanitary_dump_station:water_point")).equals("no")) ||
-                        (tags.has("water_point") && !tags.getString(("water_point")).equals("no"))) lavatory.setWaterPoint(true);
-
-                if ((tags.has("sanitary_dump_station:fee") && !tags.getString(("sanitary_dump_station:fee")).equals("no")) ||
-                    (tags.has("fee") && !tags.getString(("fee")).equals("no"))) lavatory.setPaid(true);
-
-                if ((tags.has("sanitary_dump_station:grey_water") && !tags.getString(("sanitary_dump_station:grey_water")).equals("no")) ||
-                        (tags.has("grey_water") && !tags.getString(("grey_water")).equals("no")) ||
-                        (!tags.has("sanitary_dump_station:grey_water") && (!tags.has("grey_water")))) lavatory.setGreyWater(true);
-
-                return lavatory;
-            } else if (tags.has("sanitary_dump_station") && tags.getString("sanitary_dump_station").contains("yes")){
-                if (tags.has("name")) lavatory.setOperator(tags.getString("name"));
-                if (tags.has("opening_hours")) lavatory.setOpeningHours(tags.getString("opening_hours"));
-
-
-                if (tags.has("access")){
-                    if (tags.getString("access").contains("customers") || tags.getString("access").contains("destination")) lavatory.setOpeningHours(context.getString(R.string.customers_only) + " " + lavatory.getOpeningHours());
-                    else if (tags.getString("access").contains("network")) lavatory.setOpeningHours(context.getString(R.string.customers_only) + " " + lavatory.getOpeningHours());
-                    else if (!tags.getString(("access")).contains("yes")) return null ;
-                }
-
-                if ((tags.has("sanitary_dump_station:water_point") && !tags.getString(("sanitary_dump_station:water_point")).equals("no")) ||
-                        (tags.has("water_point") && !tags.getString(("water_point")).equals("no"))) lavatory.setWaterPoint(true);
-
-                if ((tags.has("sanitary_dump_station:chemical_toilet") && !tags.getString(("sanitary_dump_station:chemical_toilet")).equals("no")) ||
-                        (tags.has("chemical_toilet") && !tags.getString(("chemical_toilet")).equals("no")) ||
-                        (tags.has("sanitary_dump_station:basin") && !tags.getString(("sanitary_dump_station:basin")).equals("no")) ||
-                        (tags.has("sanitary_dump_station:round_drain") && !tags.getString(("sanitary_dump_station:round_drain")).equals("no")) ||
-                        (tags.has("sanitary_dump_station:accepted") && tags.getString(("sanitary_dump_station:accepted")).contains("black_water"))) lavatory.setChemicalToilet(true);
-
-                if ((tags.has("sanitary_dump_station:fee") && !tags.getString(("sanitary_dump_station:fee")).equals("no")) ||
-                        (tags.has("fee") && !tags.getString(("fee")).equals("no"))) lavatory.setPaid(true);
-
-                if ((tags.has("sanitary_dump_station:grey_water") && !tags.getString(("sanitary_dump_station:grey_water")).equals("no")) ||
-                        (tags.has("grey_water") && !tags.getString(("grey_water")).equals("no")) ||
-                        (!tags.has("sanitary_dump_station:grey_water") && (!tags.has("grey_water")))) lavatory.setGreyWater(true);
-
-                return lavatory;
-            } else {
-                return null;
-            }
-
+            lavatory.setUuid(json.getString("hex"));
+            lavatory.setLatitude(json.getDouble("lat"));
+            lavatory.setLongitude(json.getDouble("lon"));
+            lavatory.setOperator(json.getString("flight"));
+            lavatory.setAddress1(json.getString("desc"));
+            lavatory.setOpeningHours( json.getString("gs")+"\u2009kt "+json.getString("alt_geom")+"\u2009ft");
+            if (json.has("track")) lavatory.setDistance(json.getDouble("track"));
+            else if (json.has("true_heading")) lavatory.setDistance(json.getDouble("true_heading"));
+            else if (json.has("mag_heading")) lavatory.setDistance(json.getDouble("mag_heading"));
+            else lavatory.setDistance(-1);
+            return lavatory;
         } catch (JSONException e) {
             e.printStackTrace();
         }

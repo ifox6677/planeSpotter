@@ -31,27 +31,21 @@ Or via this link (with fees)
 | [<img src="https://github.com/woheller69/whisperIME/blob/master/fastlane/metadata/android/en-US/images/icon.png" width="50">](https://f-droid.org/packages/org.woheller69.whisper/) | [<img src="https://github.com/woheller69/seamless/blob/master/fastlane/metadata/android/en-US/images/icon.png" width="50">](https://f-droid.org/packages/org.woheller69.seemless/) | [<img src="https://github.com/woheller69/ttsengine/blob/master/fastlane/metadata/android/en-US/images/icon.png" width="50">](https://f-droid.org/packages/org.woheller69.ttsengine/) |
 
 
-# DumpSeeker
+# PlaneSpotter
 
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/1.png" width="150"/> <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/2.png" width="150"/> 
+<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/1.png" width="150"/> 
 
-DumpSeeker shows sanitary dump stations for camper vans listed in OpenStreetMap.
-A long click on a station in the list shows the dump station in a map application.
-You can also allow the app to use GPS. If you do so the position can be updated and the first tab in the app will show sanitary dump stations for your current location.
-(This will overwrite the city in your first tab.)
+PlaneSpotter shows aircrafts for your locations.
 
-The data is provided by OpenStreetMap.
-
-<a href="https://f-droid.org/packages/org.woheller69.dumpseeker"><img alt="Get it on F-Droid" src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" height="100"></a>
-
+The data is provided by ADS-B One. Map data is provided by OpenStreetMap under the Open Database License (ODbL).
 
 ## License
 
 This app is licensed under the GPLv3, © woheller69.
 
 The app also uses:
-- Data is provided by OpenStreetMap under Open Database Licence, <a href='https://www.openstreetmap.org/copyright'>Open Database License</a>
-- Data from OpenStreetMap is retrieved via Overpass-API https://github.com/drolbr/Overpass-API (AGPL 3.0 License) and Nominatim https://github.com/osm-search/Nominatim (GPL 2.0 License)
+- ADS-B One API (https://github.com/ADSB-One/api), licensed under <a href='https://github.com/ADSB-One/api'>Apache 2.0 license</a>
+- Map data is provided by OpenStreetMap under Open Database Licence, <a href='https://www.openstreetmap.org/copyright'>Open Database License</a>
 - The code is based on Privacy Friendly Weather (https://github.com/SecUSo/privacy-friendly-weather), which is published under GPLv3
 - Icons from [Google Material Design Icons](https://material.io/resources/icons/) licensed under <a href='http://www.apache.org/licenses/LICENSE-2.0'>Apache License Version 2.0</a>
 - Material Components for Android (https://github.com/material-components/material-components-android) which is licensed under <a href='https://github.com/material-components/material-components-android/blob/master/LICENSE'>Apache License Version 2.0</a>

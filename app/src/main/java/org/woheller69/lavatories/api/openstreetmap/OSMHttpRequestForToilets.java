@@ -2,6 +2,7 @@ package org.woheller69.lavatories.api.openstreetmap;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import androidx.preference.PreferenceManager;
 
@@ -42,21 +43,15 @@ public class OSMHttpRequestForToilets implements IHttpRequest {
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
-        return String.format(
-                "%s?data=[out:json][timeout:5];(node[\"amenity\"=\"sanitary_dump_station\"](around:%s,%s,%s);node[\"sanitary_dump_station\"=\"yes\"](around:%s,%s,%s);way[\"amenity\"=\"sanitary_dump_station\"](around:%s,%s,%s);way[\"sanitary_dump_station\"=\"yes\"](around:%s,%s,%s););out;>;out skel qt;",
-                sharedPreferences.getString("pref_Overpass_URL", BuildConfig.BASE_URL),
-                sharedPreferences.getString("pref_searchRadius","30000"),
+        String url = String.format(
+                "%s/%s/%s/%s",
+                BuildConfig.BASE_URL,
                 lat,
                 lon,
-                sharedPreferences.getString("pref_searchRadius","30000"),
-                lat,
-                lon,
-                sharedPreferences.getString("pref_searchRadius","30000"),
-                lat,
-                lon,
-                sharedPreferences.getString("pref_searchRadius","30000"),
-                lat,
-                lon
+                Double.parseDouble(sharedPreferences.getString("pref_searchRadius","30000"))/1000
         );
+
+        Log.d("url",url);
+        return url;
     }
 }

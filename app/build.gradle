@@ -5,17 +5,17 @@ android {
     compileSdk 35
     android.buildFeatures.buildConfig true
     namespace 'org.woheller69.lavatories'
+
     defaultConfig {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        applicationId "org.woheller69.dumpseeker"
+        applicationId "org.woheller69.planespotter"
         minSdk 26
         targetSdk 35
-        versionCode 17
-        versionName "1.7"
+        versionCode 10
+        versionName "1.0"
 
-        buildConfigField "String", "BASE_URL", "\"https://overpass-api.de/api/interpreter\""
-        buildConfigField "String", "BASE_URL2","\"https://nominatim.openstreetmap.org/\""
-        buildConfigField "String", "GITHUB_URL","\"https://github.com/woheller69/dumpseeker/\""
+        buildConfigField "String", "BASE_URL", "\"https://api.adsb.one/v2/point\""
+        buildConfigField "String", "GITHUB_URL","\"https://github.com/woheller69/planeSpotter/\""
         buildConfigField "String", "TILES_URL","\"https://tile.openstreetmap.org/\""
         buildConfigField "String", "GEOCODING_URL","\"https://geocoding-api.open-meteo.com/\""
     }

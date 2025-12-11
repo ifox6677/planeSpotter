@@ -1,2 +1,0 @@
-Update for Android 14 (SDK 34)
-Show direction of movement

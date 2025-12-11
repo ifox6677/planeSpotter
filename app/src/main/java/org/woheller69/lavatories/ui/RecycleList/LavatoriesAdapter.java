@@ -44,13 +44,8 @@ public class LavatoriesAdapter extends RecyclerView.Adapter<LavatoriesAdapter.La
     @Override
     public void onBindViewHolder(LavatoryViewHolder holder, int position) {
 
-        holder.dist.setText(lavatoryList.get(position).getDistance()+" km");
-        SharedPreferences prefManager = PreferenceManager.getDefaultSharedPreferences(context);
-        if (prefManager.getBoolean("pref_Debug",false)){
-            holder.address.setText((lavatoryList.get(position).getAddress1()).toUpperCase()+"\nOSM_ID: "+lavatoryList.get(position).getUuid()+"\n"+(position+1)+"/"+lavatoryList.size());
-        }else{
-            holder.address.setText((lavatoryList.get(position).getAddress1()).toUpperCase());
-        }
+        holder.address.setText((lavatoryList.get(position).getAddress1()).toUpperCase());
+
         if (position == selected) holder.itemView.setBackground(ResourcesCompat.getDrawable(context.getResources(),R.drawable.rounded_highlight,null));
         else holder.itemView.setBackground(ResourcesCompat.getDrawable(context.getResources(),R.drawable.rounded_transparent,null));
 
@@ -66,10 +61,6 @@ public class LavatoriesAdapter extends RecyclerView.Adapter<LavatoriesAdapter.La
         }
         else holder.openingHours.setVisibility(View.GONE);
 
-        if (!lavatoryList.get(position).isPaid()) holder.paid.setImageIcon(null); else holder.paid.setImageResource(R.drawable.ic_paid_black_24dp);
-        if (!lavatoryList.get(position).isChemicalToilet()) holder.chemicalToilet.setImageIcon(null); else holder.chemicalToilet.setImageResource(R.drawable.ic_chemical_toilet_24dp);
-        if (!lavatoryList.get(position).isWaterPoint()) holder.waterPoint.setImageIcon(null); else holder.waterPoint.setImageResource(R.drawable.ic_water_point_24dp);
-        if (!lavatoryList.get(position).isGreyWater()) holder.greyWater.setImageIcon(null); else holder.greyWater.setImageResource(R.drawable.ic_dumpstation_24dp);
     }
 
     @Override
@@ -96,24 +87,14 @@ public class LavatoriesAdapter extends RecyclerView.Adapter<LavatoriesAdapter.La
 
         TextView operator;
         TextView openingHours;
-        TextView dist;
         TextView address;
-        ImageView greyWater;
-        ImageView chemicalToilet;
-        ImageView waterPoint;
-        ImageView paid;
 
         LavatoryViewHolder(View itemView) {
             super(itemView);
 
             openingHours = itemView.findViewById(R.id.lavatory_hours);
             operator = itemView.findViewById(R.id.lavatory_operator);
-            dist = itemView.findViewById(R.id.lavatory_dist);
             address = itemView.findViewById(R.id.lavatory_address);
-            greyWater = itemView.findViewById(R.id.lavatory_grey_water);
-            chemicalToilet = itemView.findViewById(R.id.lavatory_chemical_toilet);
-            waterPoint = itemView.findViewById(R.id.lavatory_water_point);
-            paid = itemView.findViewById(R.id.lavatory_paid);
         }
     }
 }

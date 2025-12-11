@@ -208,136 +208,117 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.ViewHolder> {
 
                 @Override
                 public void onLongItemClick(View view, int position) {
-                    SharedPreferences prefManager = PreferenceManager.getDefaultSharedPreferences(context);
-                    if (prefManager.getBoolean("pref_Debug",false)){
-                        String osmid_path = lavatoryList.get(position).getUuid();
-                        osmid_path = osmid_path.replace("N","node/");
-                        osmid_path = osmid_path.replace("W","way/");
-                        try {
-                            context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.openstreetmap.org/"+osmid_path)));
-                        } catch (ActivityNotFoundException ignored) {}
-                    } else {
-                        String loc = lavatoryList.get(position).getLatitude() + "," + lavatoryList.get(position).getLongitude();
-                        try {
-                            context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("geo:" + loc + "?q=" + loc)));
-                        } catch (ActivityNotFoundException ignored) {
-                            Toast.makeText(context,R.string.error_no_map_app, Toast.LENGTH_LONG).show();
-                        }
-                    }
                 }
             }));
 
+            holder.map.setVisibility(View.VISIBLE);
+            holder.map.setMultiTouchControls(true);
+            holder.map.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.NEVER);
 
-            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-            if (sp.getBoolean("pref_map",true)) {
-                holder.map.setVisibility(View.VISIBLE);
-                holder.map.setMultiTouchControls(true);
-                holder.map.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.NEVER);
+            Configuration.getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context));
+            final ITileSource tileSource = new XYTileSource( "", 1, 20, 256, ".png",
+                    new String[] {BuildConfig.TILES_URL},"© OpenStreetMap contributors");
+            holder.map.setTileSource(tileSource);
+            holder.map.setTilesScaledToDpi(true);
 
-                Configuration.getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context));
-                final ITileSource tileSource = new XYTileSource( "", 1, 20, 256, ".png",
-                        new String[] {sp.getString("pref_OsmTiles_URL", BuildConfig.TILES_URL)},"© OpenStreetMap contributors");
-                holder.map.setTileSource(tileSource);
-                holder.map.setTilesScaledToDpi(true);
+            int nightmodeflag = context.getResources().getConfiguration().uiMode & android.content.res.Configuration.UI_MODE_NIGHT_MASK;
+            if (nightmodeflag == android.content.res.Configuration.UI_MODE_NIGHT_YES)
+                holder.map.getOverlayManager().getTilesOverlay().setColorFilter(TilesOverlay.INVERT_COLORS);
+            else holder.map.getOverlayManager().getTilesOverlay().setColorFilter(null);
 
-                int nightmodeflag = context.getResources().getConfiguration().uiMode & android.content.res.Configuration.UI_MODE_NIGHT_MASK;
-                if (nightmodeflag == android.content.res.Configuration.UI_MODE_NIGHT_YES)
-                    holder.map.getOverlayManager().getTilesOverlay().setColorFilter(TilesOverlay.INVERT_COLORS);
-                else holder.map.getOverlayManager().getTilesOverlay().setColorFilter(null);
+            SQLiteHelper database = SQLiteHelper.getInstance(context.getApplicationContext());
 
-                SQLiteHelper database = SQLiteHelper.getInstance(context.getApplicationContext());
+            IMapController mapController = holder.map.getController();
+            mapController.setZoom(9d);
+            GeoPoint startPoint = new GeoPoint(database.getCityToWatch(cityID).getLatitude(), database.getCityToWatch(cityID).getLongitude());
+            mapController.setCenter(startPoint);
 
-                IMapController mapController = holder.map.getController();
-                mapController.setZoom(10d);
-                GeoPoint startPoint = new GeoPoint(database.getCityToWatch(cityID).getLatitude(), database.getCityToWatch(cityID).getLongitude());
-                mapController.setCenter(startPoint);
+            CopyrightOverlay copyrightOverlay = new CopyrightOverlay(context);
+            copyrightOverlay.setCopyrightNotice(holder.map.getTileProvider().getTileSource().getCopyrightNotice());
+            copyrightOverlay.setTextColor(context.getColor(R.color.colorPrimaryDark));
+            holder.map.getOverlays().add(copyrightOverlay);
+            List<Lavatory> lavatories = database.getLavatoriesByCityId(cityID);
 
-                CopyrightOverlay copyrightOverlay = new CopyrightOverlay(context);
-                copyrightOverlay.setCopyrightNotice(holder.map.getTileProvider().getTileSource().getCopyrightNotice());
-                copyrightOverlay.setTextColor(context.getColor(R.color.colorPrimaryDark));
-                holder.map.getOverlays().add(copyrightOverlay);
-                List<Lavatory> lavatories = database.getLavatoriesByCityId(cityID);
-
-                for (Lavatory lavatory : lavatories) {
-                        GeoPoint lavatoryPosition = new GeoPoint(lavatory.getLatitude(), lavatory.getLongitude());
-                        Marker lavatoryMarker = new Marker(holder.map);
-                        lavatoryMarker.setPosition(lavatoryPosition);
-                        lavatoryMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
-                        lavatoryMarker.setIcon(ContextCompat.getDrawable(context, R.drawable.ic_dumpstation_24dp));
-                        lavatoryMarker.setInfoWindow(null);
-                        lavatoryMarker.setId(lavatory.getUuid());
-                        lavatoryMarker.setOnMarkerClickListener((marker, mapView) -> {
-                            int pos = adapter.getPosUUID(marker.getId());
-                            holder.recyclerView.getLayoutManager().scrollToPosition(pos);
-                            setHighlightMarker(pos, holder, highlightMarker);
-                            adapter.setSelected(pos);
-                            return false;
-                        });
-                        holder.map.getOverlays().add(lavatoryMarker);
-                }
-                MapEventsReceiver mapEventsReceiver = new MapEventsReceiver() {
-                    @Override
-                    public boolean singleTapConfirmedHelper(GeoPoint p) {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean longPressHelper(GeoPoint location) {
-                        if (cityID == getWidgetCityID(context) ) {
-                            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-                            alertDialogBuilder.setMessage(context.getString(R.string.dialog_search_here));
-                            alertDialogBuilder.setPositiveButton(context.getString(R.string.dialog_OK_button), (dialog, which) -> {
-                                SQLiteHelper db = SQLiteHelper.getInstance(context);
-                                CityToWatch city = db.getCityToWatch(getWidgetCityID(context));
-                                city.setLatitude((float) location.getLatitude());
-                                city.setLongitude((float) location.getLongitude());
-                                city.setCityName(String.format(Locale.getDefault(), "%.2f° / %.2f°", location.getLatitude(), location.getLongitude()));
-                                db.updateCityToWatch(city);
-                                db.deleteLavatoriesByCityId(getWidgetCityID(context));
-                                CityPagerAdapter.refreshSingleData(context,getWidgetCityID(context));
-                                LavSeekerActivity.startRefreshAnimation();
-                                LavSeekerActivity.initPagerAdapter();
-                                LavSeekerActivity.refreshTab0Header(city.getCityName());
-                            });
-                            alertDialogBuilder.setNegativeButton(context.getString(R.string.dialog_NO_button), (dialog, which) -> {
-
-                            });
-                            AlertDialog alertDialog = alertDialogBuilder.create();
-                            alertDialog.show();
-
-                        }
-                        return false;
-                    }
-                };
-
-                MapEventsOverlay OverlayEventos = new MapEventsOverlay(mapEventsReceiver);
-                holder.map.getOverlays().add(OverlayEventos);
-                myPositionListenerGPS = location -> {
-                    if (holder.map.getOverlays().contains(positionMarker)) holder.map.getOverlays().remove(positionMarker);
-                    if (location.hasBearing() && location.hasSpeed() && location.getSpeed()>0.5){
-                        Drawable originalDrawable = ContextCompat.getDrawable(context, R.drawable.ic_direction_32dp);
-                        Drawable rotatedDrawable = getRotatedDrawable(originalDrawable, location.getBearing());
-                        positionMarker.setIcon(rotatedDrawable);
-                        positionMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
+            for (Lavatory lavatory : lavatories) {
+                    GeoPoint lavatoryPosition = new GeoPoint(lavatory.getLatitude(), lavatory.getLongitude());
+                    Marker lavatoryMarker = new Marker(holder.map);
+                    lavatoryMarker.setPosition(lavatoryPosition);
+                    lavatoryMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
+                    if (lavatory.getDistance()!=-1) {
+                        lavatoryMarker.setIcon(ContextCompat.getDrawable(context, R.drawable.ic_plane_24dp));
+                        lavatoryMarker.setRotation((float) (360.0 + 45 - (lavatory.getDistance())));
                     } else {
-                        positionMarker.setIcon(ContextCompat.getDrawable(context, R.drawable.ic_location_32dp));
-                        positionMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+                        lavatoryMarker.setIcon(ContextCompat.getDrawable(context, R.drawable.baseline_star_rate_24));
                     }
-                    GeoPoint myPosition = new GeoPoint(location.getLatitude(), location.getLongitude());
-                    positionMarker.setPosition(myPosition);
-                    positionMarker.setInfoWindow(null);
-                    holder.map.getOverlays().add(positionMarker);
-                    holder.map.invalidate();
-                };
-                SharedPreferences prefManager = PreferenceManager.getDefaultSharedPreferences(context);
-                if(prefManager.getBoolean("pref_GPS", false)==TRUE && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED ) {
-                    locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0, myPositionListenerGPS);
+                    lavatoryMarker.setInfoWindow(null);
+                    lavatoryMarker.setId(lavatory.getUuid());
+                    lavatoryMarker.setOnMarkerClickListener((marker, mapView) -> {
+                        int pos = adapter.getPosUUID(marker.getId());
+                        holder.recyclerView.getLayoutManager().scrollToPosition(pos);
+                        setHighlightMarker(pos, holder, highlightMarker);
+                        adapter.setSelected(pos);
+                        return false;
+                    });
+                    holder.map.getOverlays().add(lavatoryMarker);
+            }
+            MapEventsReceiver mapEventsReceiver = new MapEventsReceiver() {
+                @Override
+                public boolean singleTapConfirmedHelper(GeoPoint p) {
+                    return false;
                 }
 
+                @Override
+                public boolean longPressHelper(GeoPoint location) {
+                    if (cityID == getWidgetCityID(context) ) {
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+                        alertDialogBuilder.setMessage(context.getString(R.string.dialog_search_here));
+                        alertDialogBuilder.setPositiveButton(context.getString(R.string.dialog_OK_button), (dialog, which) -> {
+                            SQLiteHelper db = SQLiteHelper.getInstance(context);
+                            CityToWatch city = db.getCityToWatch(getWidgetCityID(context));
+                            city.setLatitude((float) location.getLatitude());
+                            city.setLongitude((float) location.getLongitude());
+                            city.setCityName(String.format(Locale.getDefault(), "%.2f° / %.2f°", location.getLatitude(), location.getLongitude()));
+                            db.updateCityToWatch(city);
+                            db.deleteLavatoriesByCityId(getWidgetCityID(context));
+                            CityPagerAdapter.refreshSingleData(context,getWidgetCityID(context));
+                            LavSeekerActivity.startRefreshAnimation();
+                            LavSeekerActivity.initPagerAdapter();
+                            LavSeekerActivity.refreshTab0Header(city.getCityName());
+                        });
+                        alertDialogBuilder.setNegativeButton(context.getString(R.string.dialog_NO_button), (dialog, which) -> {
 
-            } else {
-                holder.map.setVisibility(View.GONE);
+                        });
+                        AlertDialog alertDialog = alertDialogBuilder.create();
+                        alertDialog.show();
+
+                    }
+                    return false;
+                }
+            };
+
+            MapEventsOverlay OverlayEventos = new MapEventsOverlay(mapEventsReceiver);
+            holder.map.getOverlays().add(OverlayEventos);
+            myPositionListenerGPS = location -> {
+                if (holder.map.getOverlays().contains(positionMarker)) holder.map.getOverlays().remove(positionMarker);
+                if (location.hasBearing() && location.hasSpeed() && location.getSpeed()>0.5){
+                    Drawable originalDrawable = ContextCompat.getDrawable(context, R.drawable.ic_direction_32dp);
+                    Drawable rotatedDrawable = getRotatedDrawable(originalDrawable, location.getBearing());
+                    positionMarker.setIcon(rotatedDrawable);
+                    positionMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
+                } else {
+                    positionMarker.setIcon(ContextCompat.getDrawable(context, R.drawable.ic_location_32dp));
+                    positionMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+                }
+                GeoPoint myPosition = new GeoPoint(location.getLatitude(), location.getLongitude());
+                positionMarker.setPosition(myPosition);
+                positionMarker.setInfoWindow(null);
+                holder.map.getOverlays().add(positionMarker);
+                holder.map.invalidate();
+            };
+            SharedPreferences prefManager = PreferenceManager.getDefaultSharedPreferences(context);
+            if(prefManager.getBoolean("pref_GPS", false)==TRUE && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED ) {
+                locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0, myPositionListenerGPS);
             }
 
             if (!lavatoryList.isEmpty()){

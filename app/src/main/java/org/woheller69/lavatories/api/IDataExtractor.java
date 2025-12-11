@@ -13,7 +13,6 @@ public interface IDataExtractor {
 
     boolean wasCityFound(String data);
 
-
     Lavatory extractLavatory(String data, int cityId, Context context);
 
 

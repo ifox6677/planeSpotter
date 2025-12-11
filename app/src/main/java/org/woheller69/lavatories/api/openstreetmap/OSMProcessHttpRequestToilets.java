@@ -17,6 +17,7 @@ import org.woheller69.lavatories.database.Lavatory;
 import org.woheller69.lavatories.database.SQLiteHelper;
 import org.woheller69.lavatories.api.IDataExtractor;
 import org.woheller69.lavatories.api.IProcessHttpRequest;
+import org.woheller69.lavatories.ui.updater.ViewUpdater;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -60,13 +61,18 @@ public class OSMProcessHttpRequestToilets implements IProcessHttpRequest {
         if (extractor.wasCityFound(response)) {
             try {
                 JSONObject json = new JSONObject(response);
-                JSONArray list = json.getJSONArray("elements");
+                JSONArray list = json.getJSONArray("ac");
+                //Log.d("Process",list.length()+"");
+                //Log.d("Process", String.valueOf(list));
                 for (int i = 0; i < list.length(); i++) {
                     String currentItem = list.get(i).toString();
+                    //Log.d("Process", "Item:"+currentItem);
                     Lavatory lavatory = extractor.extractLavatory(currentItem,cityId,context);
                     if (lavatory != null) { // Could retrieve all data, so add it to the list
                         lavatory.setCity_id(cityId);
                         lavatories.add(lavatory);
+                        dbHelper.addLavatory(lavatory);
+                        Log.d("Lavatory",lavatory.getUuid()+" "+lavatory.getLatitude()+" "+lavatory.getLongitude()+" "+lavatory.getOperator());
                     }
                 }
             } catch (JSONException e) {
@@ -77,20 +83,7 @@ public class OSMProcessHttpRequestToilets implements IProcessHttpRequest {
             if (NavigationActivity.isVisible)
                 Toast.makeText(context, ERROR_MSG, Toast.LENGTH_LONG).show();
         }
-
-        List<Lavatory> lavatoriesBatch = new ArrayList<>();
-        for (Lavatory lavatory : lavatories){  //split into batches of 49 lavatories, which is the max for Nominatim API calls
-            if (lavatoriesBatch.size()<49){
-                lavatoriesBatch.add(lavatory);
-            }
-            if (lavatoriesBatch.size()==49){
-                OSMHttpRequestForAddress addressRequest = new OSMHttpRequestForAddress(context);
-                addressRequest.perform(cityId, lavatoriesBatch);
-                lavatoriesBatch = new ArrayList<>();
-            }
-        }
-        OSMHttpRequestForAddress addressRequest = new OSMHttpRequestForAddress(context);
-        addressRequest.perform(cityId, lavatoriesBatch);
+        ViewUpdater.updateLavatories(lavatories,cityId);
     }
 
     /**

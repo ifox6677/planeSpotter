@@ -1,1 +1,1 @@
-DumpSeeker shows sanitary dump stations for camper vans listed in OpenStreetMap
+PlaneSpotter shows aircrafts for your locations

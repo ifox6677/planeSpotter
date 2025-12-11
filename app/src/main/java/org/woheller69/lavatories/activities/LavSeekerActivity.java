@@ -110,14 +110,9 @@ public class LavSeekerActivity extends NavigationActivity implements IUpdateable
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
                 //Update current tab if outside update interval, show animation
-                SQLiteHelper database = SQLiteHelper.getInstance(getApplicationContext().getApplicationContext());
-                List <Lavatory> lavatories = database.getLavatoriesByCityId(pagerAdapter.getCityIDForPos(position));
-
-                if (lavatories.size() == 0)  {
-                    if (pagerAdapter.getCityIDForPos(position)!=getWidgetCityID(context)||locationListenerGPS==null) { //do not update first TAB while location is updating
-                        CityPagerAdapter.refreshSingleData(getApplicationContext(), pagerAdapter.getCityIDForPos(position));
-                        LavSeekerActivity.startRefreshAnimation();
-                    }
+                if (pagerAdapter.getCityIDForPos(position)!=getWidgetCityID(context)||locationListenerGPS==null) { //do not update first TAB while location is updating
+                    CityPagerAdapter.refreshSingleData(getApplicationContext(), pagerAdapter.getCityIDForPos(position));
+                    LavSeekerActivity.startRefreshAnimation();
                 }
 
                 cityId=pagerAdapter.getCityIDForPos(viewPager2.getCurrentItem());  //save current cityId for next resume

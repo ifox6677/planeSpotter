@@ -23,56 +23,13 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <ImageView
-            android:id="@+id/lavatory_grey_water"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_dumpstation_24dp">
-        </ImageView>
-        <ImageView
-            android:id="@+id/lavatory_chemical_toilet"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_chemical_toilet_24dp">
-        </ImageView>
-        <ImageView
-            android:id="@+id/lavatory_water_point"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_water_point_24dp">
-        </ImageView>
-        <ImageView
-            android:id="@+id/lavatory_paid"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_paid_black_24dp">
-        </ImageView>
-        <TextView
-            android:id="@+id/lavatory_dist"
-            android:layout_width="0dp"
-            android:layout_weight="3"
-            android:layout_height="wrap_content"
-            android:gravity="end"
-            android:layout_marginBottom="3dp"
-            android:text="1.0 km"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/colorPrimaryDark" />
-    </LinearLayout>
-
     <TextView
         android:id="@+id/lavatory_hours"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="left"
         android:layout_marginBottom="3dp"
-        android:text="24/7"
+        android:text="284 kt 220400 ft"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@color/colorPrimaryDark" />
 
@@ -82,8 +39,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="left"
-        android:layout_marginTop="5dp"
-        android:text="Musterstraße 27, 12345 Musterstadt"
+        android:text="AIRBUS A320"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@color/colorPrimaryDark" />
 

@@ -6,7 +6,7 @@
         android:checkableBehavior="all">
         <item
             android:id="@+id/nav_lavatories"
-            android:icon="@drawable/ic_dumpstation_24dp"
+            android:icon="@drawable/ic_plane_24dp"
             android:title="@string/lavatories" />
         <item
             android:id="@+id/nav_manage"

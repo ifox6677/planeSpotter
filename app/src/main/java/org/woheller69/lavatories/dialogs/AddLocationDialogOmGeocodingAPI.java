@@ -94,7 +94,7 @@ public class AddLocationDialogOmGeocodingAPI extends DialogFragment {
         handler.removeMessages(TRIGGER_HIDE_KEYBOARD);
         if (selectedCity != null && webview != null) {
             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(activity);
-            String osmTiles = sp.getString("pref_OsmTiles_URL", BuildConfig.TILES_URL);
+            String osmTiles = BuildConfig.TILES_URL;
             webview.loadUrl("file:///android_asset/map.html?lat=" + selectedCity.getLatitude() + "&lon=" + selectedCity.getLongitude() + "&tiles=" + osmTiles);
         }
     }
@@ -103,7 +103,7 @@ public class AddLocationDialogOmGeocodingAPI extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(activity);
-        url = sp.getString("pref_OMGEO_URL",BuildConfig.GEOCODING_URL);
+        url = BuildConfig.GEOCODING_URL;
         url = url + urlSuffix;
         Locale locale = ConfigurationCompat.getLocales(Resources.getSystem().getConfiguration()).get(0);
         if (locale != null) lang=locale.getLanguage();
@@ -145,7 +145,7 @@ public class AddLocationDialogOmGeocodingAPI extends DialogFragment {
                         final InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(rootView.getWindowToken(), 0);
                         //Show city on map
-                        String osmTiles = sp.getString("pref_OsmTiles_URL", BuildConfig.TILES_URL);
+                        String osmTiles = BuildConfig.TILES_URL;
                         webview.loadUrl("file:///android_asset/map.html?lat=" + selectedCity.getLatitude() + "&lon=" + selectedCity.getLongitude() + "&tiles=" + osmTiles);
                     }
                 });

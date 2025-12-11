@@ -87,7 +87,7 @@ public class UpdateDataService extends JobIntentService {
         }
 
         // check timestamp of the current lavatories
-        if ((timestamp+MIN_UPDATE_INTERVAL-systemTime)>0) updateNow=false;  //even if updateNow is true, never update if less than MIN_UPDATE_INTERVAL s
+        //if ((timestamp+MIN_UPDATE_INTERVAL-systemTime)>0) updateNow=false;  //even if updateNow is true, never update if less than MIN_UPDATE_INTERVAL s
 
         // Update if update forced or if a certain time has passed
         if (updateNow) {
