@@ -39,6 +39,8 @@ PlaneSpotter shows aircrafts for your locations.
 
 The data is provided by ADS-B One. Map data is provided by OpenStreetMap under the Open Database License (ODbL).
 
+[<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" height="75">](https://apt.izzysoft.de/packages/org.woheller69.planespotter)
+
 ## License
 
 This app is licensed under the GPLv3, © woheller69.
