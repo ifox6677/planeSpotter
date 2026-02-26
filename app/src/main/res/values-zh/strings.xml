@@ -1,0 +1,76 @@
+<resources>
+    <string name="app_name">飞机实时信息</string>
+    <string name="app_name_long">飞机观测员</string>
+    <string name="activity_about">关于</string>
+    <string name="activity_settings">设置</string>
+    <string name="lavatories">飞机</string>
+    <string name="activity_manage">管理地点</string>
+    <string name="action_refresh">刷新</string>
+    <string name="navigation_drawer_open">打开导航抽屉</string>
+    <string name="navigation_drawer_close">关闭导航抽屉</string>
+    <string name="next">下一步</string>
+    <string name="okay">确定</string>
+    <string name="slide1_heading">欢迎！</string>
+    <string name="slide1_text">PlaneSpotter 可显示您所在位置附近的飞机。</string>
+    <string name="slide2_heading">使用方法</string>
+    <string name="slide2_text">您可以选择自己的位置，并查找其附近的飞机。</string>
+    <string name="slide3_heading" translatable="false">Github</string>
+    <string name="slide3_text">此应用的源代码可在 GitHub 上获取。更多说明请查看“关于”页面。</string>
+    <string name="card_lavatories_heading">最后更新</string>
+    <string name="card_error_content">请尝试更新！</string>
+    <string name="about_privacy_heading">隐私信息</string>
+    <string name="about_permission_internet_description">连接到网络：需要此权限，因为数据是通过向互联网上的服务器发送请求来获取的。没有此权限，将无法接收任何飞机信息。可选：GPS 定位授权。</string>
+    <string name="about">关于</string>
+    <string name="version_number">版本</string>
+    <string name="about_license">许可证</string>
+    <string name="about_license_text">此应用衍生自 SECUSO 研究小组开发的 Privacy Friendly Weather。源代码基于 GPLv3 许可。本应用使用了来自 Google Material Design Icons 的图标（基于 Apache 许可证 2.0 版）、Android Volley（基于 Apache 许可证 2.0 版）、AndroidX 库（基于 Apache 许可证 2.0 版）、AutoSuggestTextViewAPICall（基于 Apache 许可证 2.0 版）、osmdroid（基于 Apache 许可证 2.0 版）以及 AndroidAddressFormatter（基于 MIT 许可证）。</string>
+    <string name="about_more_info">更多信息请访问：</string>
+    <string name="about_github" translatable="false"><a href="https://github.com/">Github-Repo</a></string>
+    <string name="about_openstreetmap" translatable="false"><a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a></string>
+    <string name="about_adsbone" translatable="false"><a href="https://adsb.one">ADS-B One</a></string>
+    <string name="activity_settings_title">设置</string>
+    <string name="settings_description_API">PlaneSpotter 从 OpenStreetMap 和 ADS-B One 接收数据</string>
+    <string name="dialog_add_label">输入要添加的地点：</string>
+    <string name="dialog_add_no_city_found">未找到与您输入相匹配的地点。建议从下拉列表中选择一项。</string>
+    <string name="dialog_add_close_button">关闭</string>
+    <string name="dialog_add_add_button">添加</string>
+    <string name="error_convert_to_json">检索到的数据格式不正确。</string>
+    <string name="error_no_internet">您的设备未连接到互联网</string>
+    <string name="error_fetch_lavatories">检索数据时出错，请重试！</string>
+    <string name="error_no_city_selected">未选择任何城市。要选择城市，请前往“管理地点”。</string>
+    <string name="error_no_radius_search_result">未找到城市。增加搜索半径</string>
+    <string name="error_no_map_app">未安装地图应用</string>
+    <string name="settings_search_radius">搜索半径</string>
+    <string name="about_privacy_answer">PlaneSpotter 仅使用“互联网”权限来检索飞机数据。此外，它不包含任何跟踪机制或广告。</string>
+    <string name="about_where_from">信息来自哪里？</string>
+    <string name="about_where_from_answer">信息获取自</string>
+    <string name="about_permissions">权限</string>
+    <string name="long_press_text">长按并拖动以排序。</string>
+    <string name="swipe_to_delete">滑动删除</string>
+    <string name="settings_title_display_options">显示选项</string>
+    <string name="dialog_edit_change_button">修改</string>
+    <string name="edit_location_hint_name">名称</string>
+    <string name="settings_darkmode">Android 10+ 深色模式</string>
+    <string name="settings_position">位置</string>
+    <string name="settings_GPS_summary">允许在第一个标签页中使用当前 GPS 位置</string>
+    <string name="settings_GPS_position">允许使用 GPS</string>
+    <string name="error_no_position">无可用位置</string>
+    <string name="settings_time24h">24 小时制</string>
+    <string name="summary_time24h">覆盖系统设置</string>
+    <string name="dialog_OK_button">确定</string>
+    <string name="dialog_NO_button">否</string>
+    <string name="dialog_Later_button">稍后再说</string>
+    <string name="dialog_StarOnGitHub">您喜欢这个应用吗？请在 GitHub 上给我们一个星标，或者通过 PayPal 请开发者喝杯咖啡。</string>
+    <string name="error_no_lavatory_found">未找到飞机</string>
+    <string name="action_position">更新位置</string>
+    <string name="settings_GPS_manual">仅手动更新</string>
+    <string name="error_no_gps">请开启 GPS</string>
+    <string name="settings_map">显示地图</string>
+    <string name="github" translatable="false">GitHub</string>
+    <string name="infoOpenStreetMap">信息获取自 OpenStreetMap 和 ADS-B One</string>
+    <string name="customers_only">仅限客户</string>
+    <string name="settings_server_urls">服务器 URL</string>
+    <string name="settings_server_summary">仅在您想托管自己的服务器时更改</string>
+    <string name="dialog_search_here">修改位置？</string>
+
+</resources>
